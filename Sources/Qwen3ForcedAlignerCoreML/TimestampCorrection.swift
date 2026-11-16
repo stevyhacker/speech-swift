@@ -97,7 +97,7 @@ public enum TimestampCorrection {
     }
 
     /// Find positions of the Longest Increasing Subsequence (O(n log n))
-    static func longestIncreasingSubsequencePositions(_ arr: [Int]) -> [Int] {
+    package static func longestIncreasingSubsequencePositions(_ arr: [Int]) -> [Int] {
         guard !arr.isEmpty else { return [] }
 
         let n = arr.count

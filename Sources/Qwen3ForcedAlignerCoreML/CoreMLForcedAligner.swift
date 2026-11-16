@@ -295,7 +295,7 @@ public final class CoreMLForcedAligner {
 
     /// Overwrite ``tokenEmbeds[0, tokenStart..tokenStart+audioTokenCount, :]`` with
     /// the corresponding slice of ``audioEmbeds[0, 0..audioTokenCount, :]``.
-    static func spliceAudioEmbeddings(
+    package static func spliceAudioEmbeddings(
         into tokenEmbeds: MLMultiArray,
         audioEmbeds: MLMultiArray,
         tokenStart: Int,
@@ -372,7 +372,7 @@ public final class CoreMLForcedAligner {
         }
     }
 
-    static func argmaxAtPositions(
+    package static func argmaxAtPositions(
         logits: MLMultiArray, positions: [Int], classifyNum: Int
     ) -> [Int] {
         let shape = logits.shape.map { $0.intValue }
@@ -492,7 +492,7 @@ public final class CoreMLForcedAlignerEncoder {
         return EncodedAudio(embeddings: emb, outputLength: outLen)
     }
 
-    static func resolveURL(in directory: URL, name: String) throws -> URL {
+    package static func resolveURL(in directory: URL, name: String) throws -> URL {
         let compiled = directory.appendingPathComponent("\(name).mlmodelc", isDirectory: true)
         let pkg = directory.appendingPathComponent("\(name).mlpackage", isDirectory: true)
         if FileManager.default.fileExists(atPath: compiled.path) { return compiled }

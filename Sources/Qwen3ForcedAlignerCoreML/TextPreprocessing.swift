@@ -17,9 +17,9 @@ public struct SlottedText: Sendable {
 /// Surface + cleaned form of a single word emitted by tokenization.
 /// `surface` keeps adjacent punctuation; `cleaned` is what the model tokenizer
 /// sees (letters, numbers, and combining marks only).
-struct WordPair: Sendable {
-    var surface: String
-    let cleaned: String
+package struct WordPair: Sendable {
+    package var surface: String
+    package let cleaned: String
 }
 
 /// Language-specific text preprocessing for forced alignment.
@@ -89,13 +89,13 @@ public enum TextPreprocessor {
     /// Split text into words using the language-appropriate strategy.
     /// Returned strings are the cleaned (punctuation-stripped) forms,
     /// intended for callers that don't care about surface preservation.
-    static func splitIntoWords(_ text: String, language: String) -> [String] {
+    package static func splitIntoWords(_ text: String, language: String) -> [String] {
         return splitIntoWordPairs(text, language: language).map { $0.cleaned }
     }
 
     /// Split text into (surface, cleaned) pairs. Surface keeps adjacent
     /// punctuation; cleaned is what the model tokenizer sees.
-    static func splitIntoWordPairs(_ text: String, language: String) -> [WordPair] {
+    package static func splitIntoWordPairs(_ text: String, language: String) -> [WordPair] {
         let lang = language.lowercased()
 
         if lang.contains("japanese") || lang == "ja" {
@@ -168,7 +168,7 @@ public enum TextPreprocessor {
     /// Indonesian, etc. Chinese works because most Chinese text has no
     /// whitespace, so each ideograph becomes its own token via the per-Han
     /// break inside the (single) whitespace-bounded segment.
-    static func tokenizeSpaceLangPairs(_ text: String) -> [WordPair] {
+    package static func tokenizeSpaceLangPairs(_ text: String) -> [WordPair] {
         var pairs: [WordPair] = []
         for raw in text.split(whereSeparator: \.isWhitespace) {
             let segment = String(raw)
@@ -246,15 +246,15 @@ public enum TextPreprocessor {
 
     // MARK: - Legacy entry points (kept for tests / external callers)
 
-    static func tokenizeJapanese(_ text: String) -> [String] {
+    package static func tokenizeJapanese(_ text: String) -> [String] {
         return nlTokenizePairs(text, language: .japanese).map { $0.cleaned }
     }
 
-    static func tokenizeKorean(_ text: String) -> [String] {
+    package static func tokenizeKorean(_ text: String) -> [String] {
         return nlTokenizePairs(text, language: .korean).map { $0.cleaned }
     }
 
-    static func tokenizeSpaceLang(_ text: String) -> [String] {
+    package static func tokenizeSpaceLang(_ text: String) -> [String] {
         return tokenizeSpaceLangPairs(text).map { $0.cleaned }
     }
 
@@ -263,7 +263,7 @@ public enum TextPreprocessor {
     /// Keep only Unicode Letters (`L*`), Numbers (`N*`), and ASCII apostrophe.
     /// Strips punctuation (e.g. the full-width period `。`), symbols,
     /// separators, and marks.
-    static func cleanToken(_ token: String) -> String {
+    package static func cleanToken(_ token: String) -> String {
         var out = ""
         for scalar in token.unicodeScalars {
             if isKeptScalar(scalar) {
@@ -294,7 +294,7 @@ public enum TextPreprocessor {
     /// (0x3040–0x309F), katakana (0x30A0–0x30FF), and Hangul syllables
     /// (0xAC00–0xD7AF), which are handled by the language-specific
     /// tokenizers (Japanese / Korean) instead.
-    static func isHanIdeograph(_ scalar: Unicode.Scalar) -> Bool {
+    package static func isHanIdeograph(_ scalar: Unicode.Scalar) -> Bool {
         let v = scalar.value
         if v >= 0x4E00 && v <= 0x9FFF   { return true }  // CJK Unified
         if v >= 0x3400 && v <= 0x4DBF   { return true }  // Extension A

@@ -21,6 +21,11 @@ let package = Package(
             name: "Qwen3ASR",
             targets: ["Qwen3ASR"]
         ),
+        // The CoreML forced aligner alone: links CoreML and Accelerate, never MLX.
+        .library(
+            name: "Qwen3ForcedAlignerCoreML",
+            targets: ["Qwen3ForcedAlignerCoreML"]
+        ),
         .library(
             name: "CohereTranscribeASR",
             targets: ["CohereTranscribeASR"]
@@ -297,9 +302,14 @@ let package = Package(
             ]
         ),
         .target(
+            name: "Qwen3ForcedAlignerCoreML",
+            dependencies: ["AudioCommon"]
+        ),
+        .target(
             name: "Qwen3ASR",
             dependencies: [
                 "AudioCommon",
+                "Qwen3ForcedAlignerCoreML",
                 "MLXCommon",
                 "SpeechVAD",
                 .product(name: "MLX", package: "mlx-swift"),
